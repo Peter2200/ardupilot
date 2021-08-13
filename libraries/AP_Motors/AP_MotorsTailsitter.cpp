@@ -3,12 +3,10 @@
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -144,11 +142,11 @@ void AP_MotorsTailsitter::output_armed_stabilizing()
     float   thrust_max;                 // highest motor value
     float   thr_adj = 0.0f;             // the difference between the pilot's desired throttle and throttle_thrust_best_rpy
 
-    // apply voltage and air pressure compensation
+    // apply voltage and air pressure compensation              ****
     const float compensation_gain = get_compensation_gain();
-    roll_thrust = (_roll_in + _roll_in_ff) * compensation_gain;
-    pitch_thrust = _pitch_in + _pitch_in_ff;
-    yaw_thrust = _yaw_in + _yaw_in_ff;
+    roll_thrust = (_pitch_in + _pitch_in_ff) * compensation_gain;    //  roll->pitch
+    pitch_thrust = _roll_in + _roll_in_ff;                          // pitch->roll
+    yaw_thrust = _yaw_in + _yaw_in_ff;                             //   yaw->yaw
     throttle_thrust = get_throttle() * compensation_gain;
 
     // sanity check throttle is above zero and below current limited throttle
@@ -181,7 +179,7 @@ void AP_MotorsTailsitter::output_armed_stabilizing()
     // compensation_gain can never be zero
     _throttle_out = _throttle / compensation_gain;
 
-    // thrust vectoring
+    // thrust vectoring                              
     _tilt_left  = pitch_thrust - yaw_thrust;
     _tilt_right = pitch_thrust + yaw_thrust;
 }
